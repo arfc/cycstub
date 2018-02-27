@@ -31,12 +31,32 @@ ENDIF(DEFINED ENV{CYCLUS_ROOT_DIR})
 # Let the user know if we're using a hint
 MESSAGE(STATUS "Using ${CYCLUS_ROOT_DIR} as CYCLUS_ROOT_DIR.")
 
+# Use $DEPS_ROOT_DIR if available
+if (${DEPS_ROOT_DIR})
+    SET(DEPS_CYCLUS "${DEPS_ROOT_DIR}"
+                    "${DEPS_ROOT_DIR}/cyclus")
+    SET(DEPS_LIB_CYCLUS "${DEPS_ROOT_DIR}"
+                        "${DEPS_ROOT_DIR}/cyclus"
+                        "${DEPS_ROOT_DIR}/lib")
+    SET(DEPS_SHARE_CYCLUS "${DEPS_ROOT_DIR}/share"
+                          "${DEPS_ROOT_DIR}/share/cyclus")
+    SET(DEPS_INCLUDE_CYCLUS "${DEPS_ROOT_DIR}/include"
+                            "${DEPS_ROOT_DIR}/include/cyclus")
+else (${DEPS_ROOT_DIR})
+    SET(DEPS_INCLUDE_CYCLUS)
+endif (${DEPS_ROOT_DIR})
+MESSAGE("-- Dependency Cyclus (DEPS_CYCLUS): ${DEPS_CYCLUS}")
+MESSAGE("-- Dependency Library Cyclus (DEPS_LIB_CYCLUS): ${DEPS_LIB_CYCLUS}")
+MESSAGE("-- Dependency Share Cyclus (DEPS_SHARE_CYCLUS): ${DEPS_SHARE_CYCLUS}")
+MESSAGE("-- Dependency Include Cyclus (DEPS_INCLUDE_CYCLUS): ${DEPS_INCLUDE_CYCLUS}")
+
 # Set the include dir, this will be the future basis for other
 # defined dirs
 FIND_PATH(CYCLUS_CORE_INCLUDE_DIR cyclus.h
     HINTS "${CYCLUS_ROOT_DIR}" "${CYCLUS_ROOT_DIR}/cyclus"
     "${CYCLUS_ROOT_DIR}/include"
     "${CYCLUS_ROOT_DIR}/include/cyclus"
+    ${DEPS_INCLUDE_CYCLUS}
     /usr/local/cyclus /opt/local/cyclus
     PATH_SUFFIXES cyclus/include include include/cyclus)
 
@@ -46,6 +66,7 @@ FIND_PATH(CYCLUS_CORE_TEST_INCLUDE_DIR agent_tests.h
     HINTS "${CYCLUS_ROOT_DIR}" "${CYCLUS_ROOT_DIR}/cyclus/tests"
     "${CYCLUS_ROOT_DIR}/include"
     "${CYCLUS_ROOT_DIR}/include/cyclus/tests"
+    ${DEPS_INCLUDE_CYCLUS}
     /usr/local/cyclus /opt/local/cyclus
     PATH_SUFFIXES cyclus/include include include/cyclus include/cyclus/tests cyclus/include/tests)
 
